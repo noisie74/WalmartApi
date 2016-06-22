@@ -1,7 +1,9 @@
-package mikhail.com.walmartapi;
+package mikhail.com.walmartapi.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import mikhail.com.walmartapi.R;
 
 public class MainActivity extends AppCompatActivity {
 
