@@ -54,6 +54,12 @@ public class Products {
     public boolean isInStock() {
         return inStock;
     }
+
+    @Override
+    public String toString() {
+        return String.format("$%", price);
+
+    }
 }
 
 
