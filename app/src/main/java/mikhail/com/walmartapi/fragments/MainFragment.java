@@ -18,14 +18,21 @@ import java.util.List;
 import mikhail.com.walmartapi.R;
 import mikhail.com.walmartapi.activity.MainActivity;
 import mikhail.com.walmartapi.adapter.WalmartObjectAdapter;
+import mikhail.com.walmartapi.api.ApiKey;
 import mikhail.com.walmartapi.api.WalmartAPI;
 import mikhail.com.walmartapi.interfaces.IClickItem;
 import mikhail.com.walmartapi.model.Products;
+import mikhail.com.walmartapi.model.WalmartObject;
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by Mikhail on 6/22/16.
@@ -35,7 +42,6 @@ public class MainFragment extends Fragment {
     public View v;
     protected RecyclerView recyclerView;
     private SwipeRefreshLayout swipeContainer;
-    private Context context;
     private WalmartObjectAdapter walmartObjectAdapter;
     private List<Products> walmartProducts;
     IClickItem iClickItem;
@@ -45,9 +51,9 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-        context = getContext();
         setView();
 
+        walmartApiCall();
 
         return v;
     }
@@ -55,7 +61,7 @@ public class MainFragment extends Fragment {
     private void setView() {
 
         walmartProducts = new ArrayList<>();
-        walmartObjectAdapter = new WalmartObjectAdapter(this.getActivity(), walmartProducts, iClickItem);
+        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts, iClickItem);
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
@@ -70,16 +76,15 @@ public class MainFragment extends Fragment {
     public void walmartApiCall() {
         WalmartAPI.WalmartApiRx apiCall = WalmartAPI.createRx();
 
-        Observable<Response<Products>> observable =
-                apiCall.walmartProducts();
+        Observable<Response<WalmartObject>> observable =
+                apiCall.walmartProducts(ApiKey.apiKey, 1, 30);
 
         observable.observeOn(AndroidSchedulers.mainThread()).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
-                subscribe(new Subscriber<Response<Products>>() {
+                subscribe(new Subscriber<Response<WalmartObject>>() {
                     @Override
                     public void onCompleted() {
-
 
 
                     }
@@ -87,12 +92,21 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onError(Throwable e) {
                         swipeContainer.setRefreshing(false);
+                        Timber.d(e.getMessage());
+                        Log.d("MainActivity", "Call Failed"+ e.getMessage());
+
 
                     }
 
                     @Override
-                    public void onNext(Response<Products> productsResponse) {
-                        callSuccess(repositories);
+                    public void onNext(Response<WalmartObject> productsResponse) {
+                        callSuccess(productsResponse);
+
+//                        walmartProducts = productsResponse.body().getProducts();
+//                        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts, iClickItem);
+//                        recyclerView.setAdapter(walmartObjectAdapter);
+//                        Timber.d("Call Success!");
+                        Log.d("MainActivity", "Call Success");
 
                     }
                 });
@@ -101,14 +115,14 @@ public class MainFragment extends Fragment {
     /**
      * successful api call
      * returns a list of top repositories
-     * @param repositories
+     *
+     * @param productsResponse
      */
-    private void callSuccess(Response<Products> productsResponse) {
+    private void callSuccess(Response<WalmartObject> productsResponse) {
 
-        gitHubData = repositories.body().getItems();
-        repositoryAdapter = new RepositoryAdapter(gitHubData);
-        recyclerView.setAdapter(repositoryAdapter);
-        repositoryAdapter.notifyDataSetChanged();
+        walmartProducts = productsResponse.body().getProducts();
+        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts, iClickItem);
+        recyclerView.setAdapter(walmartObjectAdapter);
         swipeContainer.setRefreshing(false);
     }
 

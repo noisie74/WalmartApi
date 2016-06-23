@@ -3,6 +3,7 @@ package mikhail.com.walmartapi.api;
 import java.security.Key;
 
 import mikhail.com.walmartapi.model.WalmartObject;
+import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -38,4 +39,11 @@ public class WalmartAPI {
 
 
     }
+
+//    public interface getWalProducts {
+//        @GET("walmartproducts/{apiKey}/{pageNumber}/{pageSize}")
+//        Call<WalmartObject> searchResults(@Path("apiKey") String apiKey,
+//                                          @Path("pageNumber") int pageNumber,
+//                                          @Path("pageSize") int pageSize);
+//    }
 }

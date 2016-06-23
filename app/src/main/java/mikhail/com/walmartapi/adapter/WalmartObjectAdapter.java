@@ -57,9 +57,9 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         }
     }
 
-    public WalmartObjectAdapter(Activity activity, List<Products> walmartProducts, IClickItem iClickItem) {
+    public WalmartObjectAdapter(List<Products> walmartProducts, IClickItem iClickItem) {
         this.walmartProducts = walmartProducts;
-        this.mActivity = activity;
+//        this.mActivity = activity;
         this.mIClickItem = iClickItem;
     }
 
@@ -102,8 +102,10 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     private void bindData(final Products data, MyViewHolder holder) {
         holder.parentView.setTag(holder);
         holder.name.setText(data.getProductName());
-        holder.rating.setText(String.valueOf(data.getRating()));
-        holder.price.setText(data.toString());
+        if (data.getRating() > 0.0){
+            holder.rating.setText("Rating " + String.valueOf(String.format("%.01f",data.getRating())));
+        }
+        holder.price.setText("Price " + data.getPrice());
         holder.description.setText(data.getShortDescription());
 
         Picasso.with(context)
