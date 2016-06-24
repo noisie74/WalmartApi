@@ -40,10 +40,4 @@ public class WalmartAPI {
 
     }
 
-//    public interface getWalProducts {
-//        @GET("walmartproducts/{apiKey}/{pageNumber}/{pageSize}")
-//        Call<WalmartObject> searchResults(@Path("apiKey") String apiKey,
-//                                          @Path("pageNumber") int pageNumber,
-//                                          @Path("pageSize") int pageSize);
-//    }
 }

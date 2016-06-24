@@ -17,6 +17,7 @@ import java.util.List;
 
 import mikhail.com.walmartapi.R;
 import mikhail.com.walmartapi.activity.MainActivity;
+import mikhail.com.walmartapi.adapter.EndlessRecyclerViewScrollListener;
 import mikhail.com.walmartapi.adapter.WalmartObjectAdapter;
 import mikhail.com.walmartapi.api.ApiKey;
 import mikhail.com.walmartapi.api.WalmartAPI;
@@ -45,6 +46,7 @@ public class MainFragment extends Fragment {
     private WalmartObjectAdapter walmartObjectAdapter;
     private List<Products> walmartProducts;
     IClickItem iClickItem;
+     LinearLayoutManager linearLayoutManager;
 
 
     @Nullable
@@ -52,8 +54,8 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         setView();
-
-        walmartApiCall();
+        walmartApiCall(1,10);
+        setScrollListener();
 
         return v;
     }
@@ -64,7 +66,8 @@ public class MainFragment extends Fragment {
         walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts, iClickItem);
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        linearLayoutManager = new LinearLayoutManager(this.getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(walmartObjectAdapter);
     }
 
@@ -73,11 +76,12 @@ public class MainFragment extends Fragment {
         this.iClickItem = iClickItem;
     }
 
-    public void walmartApiCall() {
+    public void walmartApiCall(int pageNumber, int pageSize) {
+
         WalmartAPI.WalmartApiRx apiCall = WalmartAPI.createRx();
 
         Observable<Response<WalmartObject>> observable =
-                apiCall.walmartProducts(ApiKey.apiKey, 1, 30);
+                apiCall.walmartProducts(ApiKey.apiKey, pageNumber, pageSize);
 
         observable.observeOn(AndroidSchedulers.mainThread()).
                 subscribeOn(Schedulers.io()).
@@ -101,11 +105,6 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onNext(Response<WalmartObject> productsResponse) {
                         callSuccess(productsResponse);
-
-//                        walmartProducts = productsResponse.body().getProducts();
-//                        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts, iClickItem);
-//                        recyclerView.setAdapter(walmartObjectAdapter);
-//                        Timber.d("Call Success!");
                         Log.d("MainActivity", "Call Success");
 
                     }
@@ -125,5 +124,19 @@ public class MainFragment extends Fragment {
         recyclerView.setAdapter(walmartObjectAdapter);
         swipeContainer.setRefreshing(false);
     }
+
+    private void setScrollListener(){
+
+        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+
+             walmartApiCall(++page,10);
+
+            }
+        });
+    }
+
+
 
 }

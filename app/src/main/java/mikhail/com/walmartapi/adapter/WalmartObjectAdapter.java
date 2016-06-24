@@ -40,8 +40,8 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         public TextView rating;
         @BindView(R.id.product_price)
         public TextView price;
-        @BindView(R.id.product_desc)
-        public TextView description;
+//        @BindView(R.id.product_desc)
+//        public TextView description;
         @BindView(R.id.product_img)
         public ImageView image;
         public View parentView;
@@ -108,7 +108,7 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         }
         holder.price.setText("Price " + data.getPrice());
 
-        holder.description.setText(data.getShortDescription());
+//        holder.description.setText(data.getShortDescription());
 
         Picasso.with(context)
                 .load(data.getImage())

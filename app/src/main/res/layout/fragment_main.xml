@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/product_img"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_alignParentTop="true"
             android:paddingBottom="4dp"
             android:paddingLeft="4dp"
@@ -41,36 +41,23 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_name"
             android:layout_toRightOf="@id/product_img"
-            android:maxLines="1"
             android:paddingLeft="4dp"
             android:textColor="#99666666"
+            android:paddingTop="5dp"
             android:textSize="10sp" />
 
         <TextView
             android:id="@+id/product_price"
+            android:paddingTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_rating"
             android:layout_toRightOf="@id/product_img"
-            android:maxLines="3"
             android:paddingBottom="4dp"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:textColor="#666"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/product_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/product_price"
-            android:layout_toRightOf="@id/product_img"
-            android:maxLines="3"
-            android:paddingBottom="4dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:textColor="#666"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
     </RelativeLayout>
 
