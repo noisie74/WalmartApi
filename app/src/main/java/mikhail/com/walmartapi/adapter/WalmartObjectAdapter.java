@@ -3,7 +3,6 @@ package mikhail.com.walmartapi.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mikhail.com.walmartapi.R;
-import mikhail.com.walmartapi.interfaces.IClickItem;
+import mikhail.com.walmartapi.interfaces.OnItemClickListener;
 import mikhail.com.walmartapi.model.Products;
 
 /**
@@ -28,10 +27,14 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     private static final String TAG = "WalmartObjectAdapter";
     private List<Products> walmartProducts;
     public Context context;
+    public static OnItemClickListener listener;
 
     private Activity mActivity;
 
-    private IClickItem mIClickItem;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.product_name)
@@ -46,7 +49,7 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         public ImageView image;
         public View parentView;
 
-        public MyViewHolder(View view) {
+        public MyViewHolder(final View view) {
             super(view);
             this.parentView = view;
 
@@ -55,13 +58,19 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null)
+                        listener.onItemClick(view, getLayoutPosition());
+                }
+            });
         }
     }
 
-    public WalmartObjectAdapter(List<Products> walmartProducts, IClickItem iClickItem) {
+    public WalmartObjectAdapter(List<Products> walmartProducts) {
         this.walmartProducts = walmartProducts;
-//        this.mActivity = activity;
-        this.mIClickItem = iClickItem;
     }
 
 

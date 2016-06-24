@@ -1,9 +1,9 @@
 package mikhail.com.walmartapi.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,19 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mikhail.com.walmartapi.R;
-import mikhail.com.walmartapi.activity.MainActivity;
 import mikhail.com.walmartapi.adapter.EndlessRecyclerViewScrollListener;
 import mikhail.com.walmartapi.adapter.WalmartObjectAdapter;
 import mikhail.com.walmartapi.api.ApiKey;
 import mikhail.com.walmartapi.api.WalmartAPI;
-import mikhail.com.walmartapi.interfaces.IClickItem;
+import mikhail.com.walmartapi.interfaces.OnItemClickListener;
 import mikhail.com.walmartapi.model.Products;
 import mikhail.com.walmartapi.model.WalmartObject;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -45,8 +40,9 @@ public class MainFragment extends Fragment {
     private SwipeRefreshLayout swipeContainer;
     private WalmartObjectAdapter walmartObjectAdapter;
     private List<Products> walmartProducts;
-    IClickItem iClickItem;
-     LinearLayoutManager linearLayoutManager;
+    private Bundle args;
+    OnItemClickListener listener;
+    LinearLayoutManager linearLayoutManager;
 
 
     @Nullable
@@ -56,6 +52,7 @@ public class MainFragment extends Fragment {
         setView();
         walmartApiCall(1,10);
         setScrollListener();
+        productsClickListener();
 
         return v;
     }
@@ -63,7 +60,7 @@ public class MainFragment extends Fragment {
     private void setView() {
 
         walmartProducts = new ArrayList<>();
-        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts, iClickItem);
+        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts);
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
         linearLayoutManager = new LinearLayoutManager(this.getActivity());
@@ -72,9 +69,6 @@ public class MainFragment extends Fragment {
     }
 
 
-    public void setIClickItem(IClickItem iClickItem) {
-        this.iClickItem = iClickItem;
-    }
 
     public void walmartApiCall(int pageNumber, int pageSize) {
 
@@ -120,7 +114,7 @@ public class MainFragment extends Fragment {
     private void callSuccess(Response<WalmartObject> productsResponse) {
 
         walmartProducts = productsResponse.body().getProducts();
-        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts, iClickItem);
+        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts);
         recyclerView.setAdapter(walmartObjectAdapter);
         swipeContainer.setRefreshing(false);
     }
@@ -138,5 +132,40 @@ public class MainFragment extends Fragment {
     }
 
 
+    private void setBundle(int position) {
+       Bundle args = new Bundle();
+        String[] clickedItem = {walmartProducts.get(position).getImage(),
+                walmartProducts.get(position).getLongDescription(),
+                String.valueOf(walmartProducts.get(position).isInStock())};
+        args.putStringArray("Item", clickedItem);
+    }
+
+
+    private void productsClickListener() {
+
+        if (walmartObjectAdapter != null) {
+
+            walmartObjectAdapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(View itemView, int position) {
+
+                    setBundle(position);
+                    setContributorFragment(args);
+                }
+            });
+        }
+
+    }
+
+    private void setContributorFragment(Bundle args) {
+        DetailsFragment detailsFragment = new DetailsFragment();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
+        fragmentTransaction.replace(R.id.frag_container, detailsFragment, "TAG");
+        fragmentTransaction.addToBackStack("TAG");
+        fragmentTransaction.commit();
+        detailsFragment.setArguments(args);
+
+    }
 
 }

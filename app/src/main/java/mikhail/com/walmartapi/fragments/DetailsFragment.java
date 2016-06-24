@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,14 +19,14 @@ import mikhail.com.walmartapi.model.Products;
 /**
  * Created by Mikhail on 6/23/16.
  */
-public class ContributorFragment extends Fragment {
+public class DetailsFragment extends Fragment {
 
     protected View v;
     protected Context context;
     private DetailsAdapter detailsAdapter;
     private List<Products> products;
     protected RecyclerView recyclerView;
-    private String[] selectedRepository;
+    private String[] selectedItem;
 
 
     @Nullable
@@ -36,12 +35,15 @@ public class ContributorFragment extends Fragment {
 
         v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
 
+        getClickedItem();
+        initRecyclerView(v);
+
         return v;
     }
 
     private void getClickedItem() {
         Bundle clickedRepository = getArguments();
-        selectedRepository = clickedRepository.getStringArray();
+        selectedItem = clickedRepository.getStringArray("Item");
     }
 
     /**
