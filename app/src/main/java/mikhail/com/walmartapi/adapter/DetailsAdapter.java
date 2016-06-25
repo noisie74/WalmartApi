@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import mikhail.com.walmartapi.R;
 import mikhail.com.walmartapi.model.Products;
 
@@ -33,9 +34,16 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
         public ImageView image;
 
 
-        public ViewHolder(View v) {
-            super(v);
 
+        public ViewHolder(final View view) {
+            super(view);
+
+
+            try {
+                ButterKnife.bind(this, view);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
     }
@@ -52,16 +60,15 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
         context = parent.getContext();
 
 
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        Products data = this.products.get(position);
+        Products data = products.get(position);
 
-        holder.description.setText(data.getLongDescription());
+        holder.description.setText(data.getShortDescription());
 
         if (data.isInStock()){
             String inStock = "In Stock";

@@ -43,6 +43,9 @@ public class MainFragment extends Fragment {
     private Bundle args;
     OnItemClickListener listener;
     LinearLayoutManager linearLayoutManager;
+    boolean requestInProgress;
+    int pageNumber = 0;
+
 
 
     @Nullable
@@ -50,7 +53,10 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         setView();
-        walmartApiCall(1,10);
+        if (pageNumber == 0){
+            walmartApiCall(1,10);
+            pageNumber++;
+        }
         setScrollListener();
         productsClickListener();
 
@@ -116,6 +122,7 @@ public class MainFragment extends Fragment {
         walmartProducts = productsResponse.body().getProducts();
         walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts);
         recyclerView.setAdapter(walmartObjectAdapter);
+        walmartObjectAdapter.notifyDataSetChanged();
         swipeContainer.setRefreshing(false);
     }
 
@@ -125,7 +132,24 @@ public class MainFragment extends Fragment {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
 
-             walmartApiCall(++page,10);
+
+//             walmartApiCall(++page,10);
+
+                boolean requestInProgress = true;
+//                int pageNumber = 0;
+
+//                if (pageNumber > 0 && pageNumber <= 10){
+//
+//                    pageNumber = pageNumber + 1;
+//                    walmartApiCall(pageNumber, 10);
+//                    walmartObjectAdapter.notifyDataSetChanged();
+//                }
+
+                for (int i = 0; i < 30; i++) {
+                    Products products = new Products();
+                    walmartProducts.add(products);
+                    walmartObjectAdapter.notifyItemInserted();
+                }
 
             }
         });
@@ -133,7 +157,7 @@ public class MainFragment extends Fragment {
 
 
     private void setBundle(int position) {
-       Bundle args = new Bundle();
+        args = new Bundle();
         String[] clickedItem = {walmartProducts.get(position).getImage(),
                 walmartProducts.get(position).getLongDescription(),
                 String.valueOf(walmartProducts.get(position).isInStock())};
