@@ -79,7 +79,7 @@ public class MainFragment extends Fragment {
         WalmartAPI.WalmartApiRx apiCall = WalmartAPI.createRx();
 
         Observable<Response<WalmartObject>> observable =
-                apiCall.walmartProducts(ApiKey.apiKey, 1, 10);
+                apiCall.getWalmartProducts(ApiKey.apiKey, 1, 10);
 
         observable.observeOn(AndroidSchedulers.mainThread()).
                 subscribeOn(Schedulers.io()).

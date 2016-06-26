@@ -35,10 +35,10 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     private Activity mActivity;
 
 
-    public void setOnItemClickListener(Activity activity, List<Products> products, OnItemClickListener listener) {
+    public void setOnItemClickListener(Activity activity, List<Products> products, IClickItem mIClickItem) {
         this.mActivity = activity;
         this.walmartProducts = products;
-        this.listener = listener;
+        this.mIClickItem = mIClickItem;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -105,8 +105,9 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Products data = walmartProducts.get(position);
+        final Products data = walmartProducts.get(position);
         bindData(data, holder);
+
     }
 
     @Override
@@ -128,6 +129,13 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
                 .into(holder.image);
 
 
+        holder.parentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIClickItem != null)
+                    mIClickItem.onClick(data.getProductName());
+            }
+        });
     }
 
 }

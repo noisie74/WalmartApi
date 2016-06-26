@@ -15,7 +15,6 @@ import java.util.List;
 
 import mikhail.com.walmartapi.R;
 import mikhail.com.walmartapi.adapter.DetailsAdapter;
-import mikhail.com.walmartapi.adapter.WalmartObjectAdapter;
 import mikhail.com.walmartapi.api.ApiKey;
 import mikhail.com.walmartapi.api.WalmartAPI;
 import mikhail.com.walmartapi.model.Products;
@@ -75,7 +74,7 @@ public class DetailsFragment extends Fragment {
         WalmartAPI.WalmartApiRx apiCall = WalmartAPI.createRx();
 
         Observable<Response<WalmartObject>> observable =
-                apiCall.walmartProducts(ApiKey.apiKey, 1, 20);
+                apiCall.getWalmartProducts(ApiKey.apiKey, 1, 20);
 
         observable.observeOn(AndroidSchedulers.mainThread()).
                 subscribeOn(Schedulers.io()).

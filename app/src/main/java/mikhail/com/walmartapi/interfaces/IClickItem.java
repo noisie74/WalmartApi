@@ -8,5 +8,5 @@ import mikhail.com.walmartapi.model.WalmartObject;
  */
 public interface IClickItem {
 
-    void onClick(WalmartObject walmartObject);
+    void onClick(String name);
 }

@@ -32,7 +32,7 @@ public class WalmartAPI {
 
     public interface WalmartApiRx {
         @GET("walmartproducts/{apiKey}/{pageNumber}/{pageSize}")
-        Observable<Response<WalmartObject>> walmartProducts(
+        Observable<Response<WalmartObject>> getWalmartProducts(
                 @Path("apiKey") String apiKey,
                 @Path("pageNumber") int pageNumber,
                 @Path("pageSize") int pageSize);
