@@ -16,6 +16,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mikhail.com.walmartapi.R;
+import mikhail.com.walmartapi.interfaces.IClickItem;
 import mikhail.com.walmartapi.interfaces.OnItemClickListener;
 import mikhail.com.walmartapi.model.Products;
 
@@ -27,12 +28,16 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     private static final String TAG = "WalmartObjectAdapter";
     private List<Products> walmartProducts;
     public Context context;
-    public static OnItemClickListener listener;
+    public  OnItemClickListener listener;
+    private IClickItem mIClickItem;
+
 
     private Activity mActivity;
 
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnItemClickListener(Activity activity, List<Products> products, OnItemClickListener listener) {
+        this.mActivity = activity;
+        this.walmartProducts = products;
         this.listener = listener;
     }
 
@@ -43,7 +48,7 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         public TextView rating;
         @BindView(R.id.product_price)
         public TextView price;
-//        @BindView(R.id.product_desc)
+        //        @BindView(R.id.product_desc)
 //        public TextView description;
         @BindView(R.id.product_img)
         public ImageView image;
@@ -74,8 +79,8 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     }
 
 
-    public void setProductList(List<Products> walmartProducts) {
-        this.walmartProducts = walmartProducts;
+    public void setProductList(List<Products> list) {
+        this.walmartProducts = list;
     }
 
     public void onRelease() {
@@ -112,29 +117,17 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     private void bindData(final Products data, MyViewHolder holder) {
         holder.parentView.setTag(holder);
         holder.name.setText(data.getProductName());
-        if (data.getRating() > 0.0){
-            holder.rating.setText("Rating " + String.valueOf(String.format("%.01f",data.getRating())));
+        if (data.getRating() > 0.0) {
+            holder.rating.setText("Rating " + String.valueOf(String.format("%.01f", data.getRating())));
         }
         holder.price.setText("Price " + data.getPrice());
-
-//        holder.description.setText(data.getShortDescription());
 
         Picasso.with(context)
                 .load(data.getImage())
                 .placeholder(R.drawable.placeholder)
                 .into(holder.image);
+
+
     }
-
-
-//    holder.parentView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mIClickItem != null) {
-//                    mIClickItem.onClick(data);
-//                }
-//            }
-//        });
-//
-//    }
 
 }

@@ -43,9 +43,8 @@ public class MainFragment extends Fragment {
     private Bundle args;
     OnItemClickListener listener;
     LinearLayoutManager linearLayoutManager;
-    boolean requestInProgress;
+    boolean requestInProgress = true;
     int pageNumber = 0;
-
 
 
     @Nullable
@@ -53,8 +52,8 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         setView();
-        if (pageNumber == 0){
-            walmartApiCall(1,10);
+        if (pageNumber == 0) {
+            walmartApiCall();
             pageNumber++;
         }
         setScrollListener();
@@ -75,13 +74,12 @@ public class MainFragment extends Fragment {
     }
 
 
-
-    public void walmartApiCall(int pageNumber, int pageSize) {
+    public void walmartApiCall() {
 
         WalmartAPI.WalmartApiRx apiCall = WalmartAPI.createRx();
 
         Observable<Response<WalmartObject>> observable =
-                apiCall.walmartProducts(ApiKey.apiKey, pageNumber, pageSize);
+                apiCall.walmartProducts(ApiKey.apiKey, 1, 10);
 
         observable.observeOn(AndroidSchedulers.mainThread()).
                 subscribeOn(Schedulers.io()).
@@ -97,7 +95,7 @@ public class MainFragment extends Fragment {
                     public void onError(Throwable e) {
                         swipeContainer.setRefreshing(false);
                         Timber.d(e.getMessage());
-                        Log.d("MainActivity", "Call Failed"+ e.getMessage());
+                        Log.d("MainActivity", "Call Failed" + e.getMessage());
 
 
                     }
@@ -126,30 +124,17 @@ public class MainFragment extends Fragment {
         swipeContainer.setRefreshing(false);
     }
 
-    private void setScrollListener(){
+    private void setScrollListener() {
 
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
 
-
-//             walmartApiCall(++page,10);
-
-                boolean requestInProgress = true;
-//                int pageNumber = 0;
-
-//                if (pageNumber > 0 && pageNumber <= 10){
-//
-//                    pageNumber = pageNumber + 1;
-//                    walmartApiCall(pageNumber, 10);
-//                    walmartObjectAdapter.notifyDataSetChanged();
+//                int curPage = 0;
+//                for (int i = curPage; i < 10; i++) {
+//                    walmartApiCall(i, 10);
 //                }
-
-                for (int i = 0; i < 30; i++) {
-                    Products products = new Products();
-                    walmartProducts.add(products);
-                    walmartObjectAdapter.notifyItemInserted();
-                }
+                walmartApiCall();
 
             }
         });
