@@ -2,6 +2,7 @@ package mikhail.com.walmartapi.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import mikhail.com.walmartapi.R;
 import mikhail.com.walmartapi.interfaces.OnItemClickListener;
+import mikhail.com.walmartapi.interfaces.OnLoadMoreListener;
 import mikhail.com.walmartapi.model.Products;
 
 /**
@@ -29,8 +31,22 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     public Context context;
     public static OnItemClickListener listener;
 
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
+
+    private OnLoadMoreListener mOnLoadMoreListener;
+
+    private boolean isLoading;
+    private int visibleThreshold = 5;
+    private int lastVisibleItem, totalItemCount;
+
+    RecyclerView mRecyclerView;
+
     private Activity mActivity;
 
+    public void setLoaded() {
+        isLoading = false;
+    }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
@@ -43,8 +59,6 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         public TextView rating;
         @BindView(R.id.product_price)
         public TextView price;
-//        @BindView(R.id.product_desc)
-//        public TextView description;
         @BindView(R.id.product_img)
         public ImageView image;
         public View parentView;
@@ -73,20 +87,44 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         this.walmartProducts = walmartProducts;
     }
 
+    public WalmartObjectAdapter() {
+        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
 
-    public void setProductList(List<Products> walmartProducts) {
-        this.walmartProducts = walmartProducts;
+                totalItemCount = linearLayoutManager.getItemCount();
+                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+
+                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    if (mOnLoadMoreListener != null) {
+                        mOnLoadMoreListener.onLoadMore();
+                    }
+                    isLoading = true;
+                }
+            }
+        });
     }
 
-    public void onRelease() {
-        if (walmartProducts != null) {
-            walmartProducts.clear();
-            walmartProducts = null;
-        }
-        if (mActivity != null) {
-            mActivity = null;
-        }
+    public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
+        this.mOnLoadMoreListener = mOnLoadMoreListener;
     }
+
+//
+//    public void setProductList(List<Products> walmartProducts) {
+//        this.walmartProducts = walmartProducts;
+//    }
+//
+//    public void onRelease() {
+//        if (walmartProducts != null) {
+//            walmartProducts.clear();
+//            walmartProducts = null;
+//        }
+//        if (mActivity != null) {
+//            mActivity = null;
+//        }
+//    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
