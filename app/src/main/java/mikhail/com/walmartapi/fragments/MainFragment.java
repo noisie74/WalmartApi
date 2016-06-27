@@ -54,7 +54,7 @@ public class MainFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         ButterKnife.bind(this, view);
         Bundle bun = getArguments();
         ArrayList<Products> list = bun.getParcelableArrayList(EXTRAS_LIST);
