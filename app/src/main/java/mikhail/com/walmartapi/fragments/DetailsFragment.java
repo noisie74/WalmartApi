@@ -3,105 +3,70 @@ package mikhail.com.walmartapi.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import java.util.List;
+import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import mikhail.com.walmartapi.R;
-import mikhail.com.walmartapi.adapter.DetailsAdapter;
-import mikhail.com.walmartapi.api.ApiKey;
-import mikhail.com.walmartapi.api.WalmartAPI;
 import mikhail.com.walmartapi.model.Products;
-import mikhail.com.walmartapi.model.WalmartObject;
-import retrofit2.Response;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
- * Created by Mikhail on 6/23/16.
+ * Created by Mikhail on 6/26/16.
  */
-public class DetailsFragment extends Fragment {
+public class DetailsFragment extends BaseFragment {
 
-    protected View v;
-    protected Context context;
-    private DetailsAdapter detailsAdapter;
-    private List<Products> products;
-    protected RecyclerView recyclerView;
-    private String[] selectedItem;
+    public static final String EXTRAS_OWNER = "extras_products_list";
+    Context context;
 
+
+    @BindView(R.id.description)
+    public TextView description;
+    @BindView(R.id.instock)
+    public TextView inStock;
+    @BindView(R.id.image_detail)
+    public ImageView image;
+
+    public static DetailsFragment createNewDetailsFragment(Products products) {
+        DetailsFragment fragment = new DetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRAS_OWNER, products);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_details, container, false);
+        ButterKnife.bind(this, view);
+        Products products = getArguments().getParcelable(EXTRAS_OWNER);
+        context = getContext();
 
-        v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-
-        getClickedItem();
-        initRecyclerView(v);
-//        walmartApiCall();
-
-        return v;
-    }
-
-    private void getClickedItem() {
-        Bundle clickedRepository = getArguments();
-        selectedItem = clickedRepository.getStringArray("Item");
-    }
-
-    /**
-     * initialize recycler view
-     * and give adapter empty arrayList
-     */
-    private void initRecyclerView(View v) {
-        recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        detailsAdapter = new DetailsAdapter(products);
-
+        bindData(products);
+        return view;
     }
 
 
-    public void walmartApiCall() {
+    public void bindData(Products products) {
+        if (products == null)
+            return;
+        description.setText(products.getLongDescription());
 
-        WalmartAPI.WalmartApiRx apiCall = WalmartAPI.createRx();
-
-        Observable<Response<WalmartObject>> observable =
-                apiCall.getWalmartProducts(ApiKey.apiKey, 1, 20);
-
-        observable.observeOn(AndroidSchedulers.mainThread()).
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe(new Subscriber<Response<WalmartObject>>() {
-                    @Override
-                    public void onCompleted() {
+        if (products.isInStock()) {
+            String productAvailable = "In Stock";
+            inStock.setText(productAvailable);
+        }
 
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e.getMessage());
-                        Log.d("MainActivity", "Call Failed"+ e.getMessage());
-
-
-                    }
-
-                    @Override
-                    public void onNext(Response<WalmartObject> productsResponse) {
-                        Log.d("MainActivity", "Call Success");
-                        products = productsResponse.body().getProducts();
-                        detailsAdapter = new DetailsAdapter(products);
-                        recyclerView.setAdapter(detailsAdapter);
-
-                    }
-                });
+        Picasso.with(context)
+                .load(products.getImage())
+                .placeholder(R.drawable.placeholder)
+                .into(image);
     }
 }

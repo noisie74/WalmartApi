@@ -33,7 +33,7 @@ public class GetPresenter {
         mApi = mApiComponent.provideWalmartService();
     }
 
-    public void loadRepositories(final boolean isRefresh) {
+    public void loadProducts(final boolean isRefresh) {
         if (!isRefresh)
             mView.showProgress(true);
         mApi.getWalmartProducts(ApiKey.apiKey, 1, 10)

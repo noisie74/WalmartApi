@@ -34,11 +34,17 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
 
     private Activity mActivity;
 
+//
+//    public void setOnItemClickListener(Activity activity, List<Products> products, IClickItem mIClickItem) {
+//        this.mActivity = activity;
+//        this.walmartProducts = products;
+//        this.mIClickItem = mIClickItem;
+//    }
 
-    public void setOnItemClickListener(Activity activity, List<Products> products, IClickItem mIClickItem) {
+    public WalmartObjectAdapter(Activity activity, List<Products> mediaList, IClickItem iClickItem) {
+        this.walmartProducts = mediaList;
         this.mActivity = activity;
-        this.walmartProducts = products;
-        this.mIClickItem = mIClickItem;
+        this.mIClickItem = iClickItem;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

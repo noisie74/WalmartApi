@@ -2,12 +2,9 @@ package mikhail.com.walmartapi.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,166 +12,90 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import mikhail.com.walmartapi.R;
-import mikhail.com.walmartapi.adapter.EndlessRecyclerViewScrollListener;
 import mikhail.com.walmartapi.adapter.WalmartObjectAdapter;
-import mikhail.com.walmartapi.api.ApiKey;
-import mikhail.com.walmartapi.api.WalmartAPI;
-import mikhail.com.walmartapi.interfaces.OnItemClickListener;
+import mikhail.com.walmartapi.interfaces.IClickItem;
+import mikhail.com.walmartapi.interfaces.ILoadData;
 import mikhail.com.walmartapi.model.Products;
-import mikhail.com.walmartapi.model.WalmartObject;
-import retrofit2.Response;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
- * Created by Mikhail on 6/22/16.
+ * Created by Mikhail on 6/26/16.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends BaseFragment {
 
-    public View v;
-    protected RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeContainer;
-    private WalmartObjectAdapter walmartObjectAdapter;
-    private List<Products> walmartProducts;
-    private Bundle args;
-    OnItemClickListener listener;
-    LinearLayoutManager linearLayoutManager;
-    boolean requestInProgress = true;
-    int pageNumber = 0;
+    private static final String EXTRAS_LIST = "products_list";
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
 
+    @BindView(R.id.swipeContainer)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    WalmartObjectAdapter mAdapter;
+
+    IClickItem mIClickItem;
+    ILoadData mILoadData;
+    public static MainFragment createNewDetailsFragment(ArrayList<Products> listProducts){
+        MainFragment fragment = new MainFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(EXTRAS_LIST, listProducts);
+        fragment.setArguments(bundle);
+        return  fragment;
+    }
+
+    public void setIClickItem(IClickItem iClickItem){
+        this.mIClickItem = iClickItem;
+    }
+
+    public void setILoadData(ILoadData iLoadData){
+        this.mILoadData = iLoadData;
+    }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-        setView();
-        if (pageNumber == 0) {
-            walmartApiCall();
-            pageNumber++;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        ButterKnife.bind(this, view);
+        Bundle bun = getArguments();
+        ArrayList<Products> list = bun.getParcelableArrayList(EXTRAS_LIST);
+        mAdapter = new WalmartObjectAdapter(this.getActivity(), list, mIClickItem);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        mRecyclerView.setAdapter(mAdapter);
+        initSwipeLayout();
+
+        getActivity().setTitle(R.string.app_name);
+        return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAdapter != null) {
+            mAdapter.onRelease();
+            mAdapter = null;
         }
-        setScrollListener();
-        productsClickListener();
 
-        return v;
-    }
-
-    private void setView() {
-
-        walmartProducts = new ArrayList<>();
-        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts);
-        recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
-        linearLayoutManager = new LinearLayoutManager(this.getActivity());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(walmartObjectAdapter);
+        super.onDestroy();
     }
 
 
-    public void walmartApiCall() {
-
-        WalmartAPI.WalmartApiRx apiCall = WalmartAPI.createRx();
-
-        Observable<Response<WalmartObject>> observable =
-                apiCall.getWalmartProducts(ApiKey.apiKey, 1, 10);
-
-        observable.observeOn(AndroidSchedulers.mainThread()).
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe(new Subscriber<Response<WalmartObject>>() {
-                    @Override
-                    public void onCompleted() {
-
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        swipeContainer.setRefreshing(false);
-                        Timber.d(e.getMessage());
-                        Log.d("MainActivity", "Call Failed" + e.getMessage());
-
-
-                    }
-
-                    @Override
-                    public void onNext(Response<WalmartObject> productsResponse) {
-                        callSuccess(productsResponse);
-                        Log.d("MainActivity", "Call Success");
-
-                    }
-                });
+    public void onRefreshDone(){
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    /**
-     * successful api call
-     * returns a list of top repositories
-     *
-     * @param productsResponse
-     */
-    private void callSuccess(Response<WalmartObject> productsResponse) {
-
-        walmartProducts = productsResponse.body().getProducts();
-        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts);
-        recyclerView.setAdapter(walmartObjectAdapter);
-        walmartObjectAdapter.notifyDataSetChanged();
-        swipeContainer.setRefreshing(false);
+    public void onRequestSuccess(List<Products> listProducts) {
+        mAdapter.setProductList(listProducts);
+        mAdapter.notifyDataSetChanged();
     }
 
-    private void setScrollListener() {
-
-        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+    private void initSwipeLayout() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-
-//                int curPage = 0;
-//                for (int i = curPage; i < 10; i++) {
-//                    walmartApiCall(i, 10);
-//                }
-                walmartApiCall();
-
+            public void onRefresh() {
+                if (mILoadData !=null){
+                    mILoadData.onLoadData();
+                }
             }
         });
-    }
-
-
-    private void setBundle(int position) {
-        args = new Bundle();
-        String[] clickedItem = {walmartProducts.get(position).getImage(),
-                walmartProducts.get(position).getLongDescription(),
-                String.valueOf(walmartProducts.get(position).isInStock())};
-        args.putStringArray("Item", clickedItem);
-    }
-
-
-    private void productsClickListener() {
-
-        if (walmartObjectAdapter != null) {
-
-            walmartObjectAdapter.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(View itemView, int position) {
-
-                    setBundle(position);
-                    setContributorFragment(args);
-                }
-            });
-        }
-
-    }
-
-    private void setContributorFragment(Bundle args) {
-        DetailsFragment detailsFragment = new DetailsFragment();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
-        fragmentTransaction.replace(R.id.frag_container, detailsFragment, "TAG");
-        fragmentTransaction.addToBackStack("TAG");
-        fragmentTransaction.commit();
-        detailsFragment.setArguments(args);
-
     }
 
 }

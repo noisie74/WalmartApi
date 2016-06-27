@@ -1,5 +1,8 @@
 package mikhail.com.walmartapi.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.text.DecimalFormat;
@@ -8,7 +11,7 @@ import java.util.Locale;
 /**
  * Created by Mikhail on 6/21/16.
  */
-public class Products {
+public class Products implements Parcelable{
 
     private String productId;
     private String productName;
@@ -58,7 +61,17 @@ public class Products {
         return inStock;
     }
 
-//    @Override
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
+
+    //    @Override
 //    public String toString() {
 //        return String.format(DecimalFormat.getCurrencyInstance(Locale.US).format(price));
 //
