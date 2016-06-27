@@ -1,5 +1,6 @@
 package mikhail.com.walmartapi.presenter;
 
+import dagger.Provides;
 import mikhail.com.walmartapi.activity.MainActivity;
 import mikhail.com.walmartapi.api.ApiKey;
 import mikhail.com.walmartapi.api.WalmartAPI;

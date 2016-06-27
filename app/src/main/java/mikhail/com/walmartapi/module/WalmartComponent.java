@@ -3,6 +3,7 @@ package mikhail.com.walmartapi.module;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import dagger.Provides;
 import mikhail.com.walmartapi.api.WalmartAPI;
 
 /**

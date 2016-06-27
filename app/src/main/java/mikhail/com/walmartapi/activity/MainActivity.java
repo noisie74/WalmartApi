@@ -16,7 +16,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import mikhail.com.walmartapi.R;
 import mikhail.com.walmartapi.fragments.DetailsFragment;
-import mikhail.com.walmartapi.fragments.DetailsFragmentOld;
 import mikhail.com.walmartapi.fragments.MainFragment;
 import mikhail.com.walmartapi.interfaces.IClickItem;
 import mikhail.com.walmartapi.interfaces.ILoadData;
@@ -31,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements IClickItem, ILoad
     @BindView(R.id.progress_bar)
     ProgressBar mLoading;
     private GetPresenter mPresenter;
+    Products products;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements IClickItem, ILoad
 
         mPresenter = new GetPresenter(this);
         mPresenter.loadProducts(false);
+        products = new Products();
 
     }
 
@@ -55,10 +56,10 @@ public class MainActivity extends AppCompatActivity implements IClickItem, ILoad
         //control click item
         if (findViewById(R.id.details_container) != null) {
 
-            getDetailsFragment().bindData();
+            getDetailsFragment().bindData(products);
         } else {
             FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-            f.replace(R.id.details_container, DetailsFragment.createNewDetailsFragment());
+            f.replace(R.id.details_container, DetailsFragment.createNewDetailsFragment(products));
             f.addToBackStack(BACKSTACK);
             f.commit();
         }
@@ -94,20 +95,20 @@ public class MainActivity extends AppCompatActivity implements IClickItem, ILoad
         } else {
             fragment.onRequestSuccess(listProducts);
             if (findViewById(R.id.details_container) != null) {
-                getDetailsFragment().bindData();
+                getDetailsFragment().bindData(products);
             }
         }
     }
 
     private void initFragments(List<Products> listRepo, String name) {
         FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-        MainFragment fragment = MainFragment.createNewDetailsFragment(listRepo);
+        MainFragment fragment = MainFragment.createNewDetailsFragment((ArrayList<Products>) listRepo);
         fragment.setIClickItem(this);
         fragment.setILoadData(this);
         f.add(R.id.frag_container, fragment);
         // the fragment_container FrameLayout
         if (findViewById(R.id.details_container) != null) {
-            f.add(R.id.details_container, DetailsFragment.createNewDetailsFragment(listRepo));
+            f.add(R.id.details_container, DetailsFragment.createNewDetailsFragment(products));
         }
         f.commit();
 
