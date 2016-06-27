@@ -22,7 +22,7 @@ import dagger.Component;
  * Created by Mikhail on 6/25/16.
  */
 public class GetPresenter {
-    WalmartAPI.WalmartApiRx mApi;
+    WalmartAPI mApi;
     WalmartComponent mApiComponent;
     MainActivity mView;
 

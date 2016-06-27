@@ -16,21 +16,21 @@ import rx.Observable;
 /**
  * Created by Mikhail on 6/21/16.
  */
-public class WalmartAPI {
+public interface WalmartAPI {
 
     public static final String API_URL = "https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/";
 
+//
+//    public static WalmartApiRx createRx() {
+//        return new Retrofit.Builder()
+//                .baseUrl(API_URL)
+//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build()
+//                .create(WalmartAPI.WalmartApiRx.class);
+//    }
 
-    public static WalmartApiRx createRx() {
-        return new Retrofit.Builder()
-                .baseUrl(API_URL)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(WalmartAPI.WalmartApiRx.class);
-    }
 
-    public interface WalmartApiRx {
         @GET("walmartproducts/{apiKey}/{pageNumber}/{pageSize}")
         Observable<Response<WalmartObject>> getWalmartProducts(
                 @Path("apiKey") String apiKey,
@@ -38,6 +38,6 @@ public class WalmartAPI {
                 @Path("pageSize") int pageSize);
 
 
-    }
+
 
 }

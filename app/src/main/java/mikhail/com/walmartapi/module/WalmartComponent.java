@@ -12,6 +12,6 @@ import mikhail.com.walmartapi.api.WalmartAPI;
 @Singleton
 @Component(modules = {ApiModule.class})
 public interface WalmartComponent {
-    WalmartAPI.WalmartApiRx provideWalmartService();
+    WalmartAPI provideWalmartService();
 
 }
