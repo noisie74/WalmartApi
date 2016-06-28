@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements IClickItem, ILoad
             getDetailsFragment().bindData(products);
         } else {
             FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-            f.replace(R.id.details_container, DetailsFragment.createNewDetailsFragment(products));
+            f.replace(R.id.frag_container, DetailsFragment.createNewDetailsFragment(products));
             f.addToBackStack(BACKSTACK);
             f.commit();
         }
