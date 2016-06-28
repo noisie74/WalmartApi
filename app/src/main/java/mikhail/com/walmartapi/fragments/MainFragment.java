@@ -126,30 +126,13 @@ public class MainFragment extends Fragment {
         swipeContainer.setRefreshing(false);
     }
 
+
+
     private void setScrollListener(){
 
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-
-
-//             walmartApiCall(++page,10);
-
-                boolean requestInProgress = true;
-//                int pageNumber = 0;
-
-//                if (pageNumber > 0 && pageNumber <= 10){
-//
-//                    pageNumber = pageNumber + 1;
-//                    walmartApiCall(pageNumber, 10);
-//                    walmartObjectAdapter.notifyDataSetChanged();
-//                }
-
-                for (int i = 0; i < 30; i++) {
-                    Products products = new Products();
-                    walmartProducts.add(products);
-                    walmartObjectAdapter.notifyItemInserted();
-                }
 
             }
         });
@@ -158,10 +141,11 @@ public class MainFragment extends Fragment {
 
     private void setBundle(int position) {
         args = new Bundle();
-        String[] clickedItem = {walmartProducts.get(position).getImage(),
-                walmartProducts.get(position).getLongDescription(),
-                String.valueOf(walmartProducts.get(position).isInStock())};
-        args.putStringArray("Item", clickedItem);
+//        String[] clickedItem = {walmartProducts.get(position).getImage(),
+//                walmartProducts.get(position).getLongDescription(),
+//                String.valueOf(walmartProducts.get(position).isInStock())};
+        String clickedItem = walmartProducts.get(position).getImage();
+        args.putString("Item", clickedItem);
     }
 
 

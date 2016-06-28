@@ -2,6 +2,7 @@ package mikhail.com.walmartapi.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +69,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
 
         Products data = products.get(position);
 
-        holder.description.setText(data.getShortDescription());
+        holder.description.setText((Html.fromHtml(data.getLongDescription().replaceAll("<img.+?>", ""))));
 
         if (data.isInStock()){
             String inStock = "In Stock";
