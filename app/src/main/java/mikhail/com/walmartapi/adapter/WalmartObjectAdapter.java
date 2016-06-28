@@ -88,6 +88,7 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     }
 
     public WalmartObjectAdapter() {
+
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -161,18 +162,20 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
                 .load(data.getImage())
                 .placeholder(R.drawable.placeholder)
                 .into(holder.image);
-    }
 
-
-//    holder.parentView.setOnClickListener(new View.OnClickListener() {
+//        holder.parentView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                if (mIClickItem != null) {
-//                    mIClickItem.onClick(data);
+//                if (listener != null) {
+//                    listener.onItemClick(data.getLongDescription());
 //                }
 //            }
 //        });
-//
-//    }
+
+    }
 
 }
+
+
+
+
