@@ -44,7 +44,7 @@ public class MainFragment extends Fragment {
     OnItemClickListener listener;
     LinearLayoutManager linearLayoutManager;
     boolean requestInProgress;
-    int pageNumber = 0;
+    int itemsToLoad = 0;
 
 
 
@@ -53,10 +53,10 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         setView();
-        if (pageNumber == 0){
-            walmartApiCall(1,10);
-            pageNumber++;
-        }
+//        if (itemsToLoad == 0){
+            walmartApiCall(10);
+//            itemsToLoad++;
+//        }
         setScrollListener();
         productsClickListener();
 
@@ -76,12 +76,14 @@ public class MainFragment extends Fragment {
 
 
 
-    public void walmartApiCall(int pageNumber, int pageSize) {
+    public void walmartApiCall(int items) {
 
         WalmartAPI.WalmartApiRx apiCall = WalmartAPI.createRx();
 
+
+
         Observable<Response<WalmartObject>> observable =
-                apiCall.walmartProducts(ApiKey.apiKey, pageNumber, pageSize);
+                apiCall.walmartProducts(ApiKey.apiKey, 1, items);
 
         observable.observeOn(AndroidSchedulers.mainThread()).
                 subscribeOn(Schedulers.io()).
@@ -126,27 +128,26 @@ public class MainFragment extends Fragment {
         swipeContainer.setRefreshing(false);
     }
 
-
-
     private void setScrollListener(){
 
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-
+                Log.e("MainFrament","onLoadMore called");
+                itemsToLoad +=10;
+                walmartApiCall(itemsToLoad);
             }
         });
     }
 
-
-    private void setBundle(int position) {
-        args = new Bundle();
+//    private void setBundle(int position) {
+//        args = new Bundle();
 //        String[] clickedItem = {walmartProducts.get(position).getImage(),
 //                walmartProducts.get(position).getLongDescription(),
 //                String.valueOf(walmartProducts.get(position).isInStock())};
-        String clickedItem = walmartProducts.get(position).getImage();
-        args.putString("Item", clickedItem);
-    }
+////        String clickedItem = walmartProducts.get(position).getImage();
+//        args.putString("Item", clickedItem);
+//    }
 
 
     private void productsClickListener() {
@@ -157,22 +158,25 @@ public class MainFragment extends Fragment {
                 @Override
                 public void onItemClick(View itemView, int position) {
 
-                    setBundle(position);
-                    setContributorFragment(args);
+                    Products p = walmartProducts.get(position);
+                    setContributorFragment(p.getImage(), p.getLongDescription(), p.isInStock());
                 }
             });
         }
 
     }
 
-    private void setContributorFragment(Bundle args) {
+    private void setContributorFragment(String url, String description, boolean inStock) {
         DetailsFragment detailsFragment = new DetailsFragment();
+        detailsFragment.setDescription(description);
+        detailsFragment.setImageUrl(url);
+        detailsFragment.setInStock(inStock);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
         fragmentTransaction.replace(R.id.frag_container, detailsFragment, "TAG");
         fragmentTransaction.addToBackStack("TAG");
         fragmentTransaction.commit();
-        detailsFragment.setArguments(args);
+//        detailsFragment.setArguments(args);
 
     }
 
