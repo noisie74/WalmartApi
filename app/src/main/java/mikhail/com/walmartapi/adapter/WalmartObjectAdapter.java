@@ -18,7 +18,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import mikhail.com.walmartapi.R;
 import mikhail.com.walmartapi.interfaces.OnItemClickListener;
-import mikhail.com.walmartapi.interfaces.OnLoadMoreListener;
 import mikhail.com.walmartapi.model.Products;
 
 /**
@@ -26,27 +25,10 @@ import mikhail.com.walmartapi.model.Products;
  */
 public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdapter.MyViewHolder> {
 
-    private static final String TAG = "WalmartObjectAdapter";
     private List<Products> walmartProducts;
     public Context context;
-    public  OnItemClickListener listener;
+    public OnItemClickListener listener;
 
-    private final int VIEW_TYPE_ITEM = 0;
-    private final int VIEW_TYPE_LOADING = 1;
-
-    private OnLoadMoreListener mOnLoadMoreListener;
-
-    private boolean isLoading;
-    private int visibleThreshold = 5;
-    private int lastVisibleItem, totalItemCount;
-
-    RecyclerView mRecyclerView;
-
-    private Activity mActivity;
-
-    public void setLoaded() {
-        isLoading = false;
-    }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
@@ -87,45 +69,6 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         this.walmartProducts = walmartProducts;
     }
 
-    public WalmartObjectAdapter() {
-
-        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                totalItemCount = linearLayoutManager.getItemCount();
-                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-
-                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    if (mOnLoadMoreListener != null) {
-                        mOnLoadMoreListener.onLoadMore();
-                    }
-                    isLoading = true;
-                }
-            }
-        });
-    }
-
-    public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
-        this.mOnLoadMoreListener = mOnLoadMoreListener;
-    }
-
-//
-//    public void setProductList(List<Products> walmartProducts) {
-//        this.walmartProducts = walmartProducts;
-//    }
-//
-//    public void onRelease() {
-//        if (walmartProducts != null) {
-//            walmartProducts.clear();
-//            walmartProducts = null;
-//        }
-//        if (mActivity != null) {
-//            mActivity = null;
-//        }
-//    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -149,10 +92,9 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     }
 
     private void bindData(final Products data, MyViewHolder holder) {
-//        holder.parentView.setTag(holder);
         holder.name.setText(data.getProductName());
-        if (data.getRating() > 0.0){
-            holder.rating.setText("Rating " + String.valueOf(String.format("%.01f",data.getRating())));
+        if (data.getRating() > 0.0) {
+            holder.rating.setText("Rating " + String.valueOf(String.format("%.01f", data.getRating())));
         }
         holder.price.setText("Price " + data.getPrice());
 

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WalmartApi</string>
+    <string name="in_stock">In Stock</string>
 </resources>

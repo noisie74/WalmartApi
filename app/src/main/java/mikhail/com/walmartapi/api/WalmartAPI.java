@@ -18,7 +18,8 @@ import rx.Observable;
  */
 public class WalmartAPI {
 
-    public static final String API_URL = "https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/";
+    public static final String API_URL = "https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/walmartproducts/"
+            + ApiKey.apiKey ;
 
 
     public static WalmartApiRx createRx() {
@@ -31,9 +32,8 @@ public class WalmartAPI {
     }
 
     public interface WalmartApiRx {
-        @GET("walmartproducts/{apiKey}/{pageNumber}/{pageSize}")
+        @GET("{pageNumber}/{pageSize}")
         Observable<Response<WalmartObject>> walmartProducts(
-                @Path("apiKey") String apiKey,
                 @Path("pageNumber") int pageNumber,
                 @Path("pageSize") int pageSize);
 

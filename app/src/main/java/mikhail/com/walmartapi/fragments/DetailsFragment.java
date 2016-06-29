@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import mikhail.com.walmartapi.R;
 import mikhail.com.walmartapi.adapter.DetailsAdapter;
 import mikhail.com.walmartapi.adapter.WalmartObjectAdapter;
@@ -44,11 +45,11 @@ public class DetailsFragment extends Fragment {
     private String descriptionText;
     private boolean inStockVar;
 
-//    @BindView(R.id.description)
+    @BindView(R.id.description)
     public TextView description;
-//    @BindView(R.id.instock)
+    @BindView(R.id.instock)
     public TextView inStock;
-//    @BindView(R.id.image_detail)
+    @BindView(R.id.image_detail)
     public ImageView image;
 
 
@@ -58,26 +59,28 @@ public class DetailsFragment extends Fragment {
 
         v = inflater.inflate(R.layout.fragment_details, container, false);
 
-        setView(v);
+        bindData(v);
         loadData();
 
         return v;
     }
 
 
-    private void setView(View v) {
-        description = (TextView) v.findViewById(R.id.description);
-        image = (ImageView) v.findViewById(R.id.image_detail);
-        inStock = (TextView) v.findViewById(R.id.instock);
-
+    private void bindData(View v){
+        try {
+            ButterKnife.bind(this, v);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     private void loadData() {
 
         if (descriptionText != null)
             description.setText((Html.fromHtml(descriptionText.replaceAll("<img.+?>", ""))));
         if (inStockVar)
-            inStock.setText("In Stock");
+            inStock.setText(R.string.in_stock);
         if (imageUrl != null)
             Picasso.with(context)
                     .load(imageUrl)

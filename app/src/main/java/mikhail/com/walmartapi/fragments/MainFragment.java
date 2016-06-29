@@ -1,6 +1,8 @@
 package mikhail.com.walmartapi.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -45,6 +47,7 @@ public class MainFragment extends Fragment {
     boolean requestInProgress;
     int itemsToLoad = 0;
     int pageNumber = 1;
+    int currentClickedPage = 0;
 
 
     @Nullable
@@ -78,7 +81,7 @@ public class MainFragment extends Fragment {
 
 
         Observable<Response<WalmartObject>> observable =
-                apiCall.walmartProducts(ApiKey.apiKey, pageNumber, items);
+                apiCall.walmartProducts(pageNumber, items);
 
         observable.observeOn(AndroidSchedulers.mainThread()).
                 subscribeOn(Schedulers.io()).
@@ -138,8 +141,24 @@ public class MainFragment extends Fragment {
                 Log.e("MainFrament", "onLoadMore called");
 
                 walmartApiCall(pageNumber++, 10);
+                currentClickedPage++;
             }
         });
+    }
+
+
+    private void getPositionOnTheScreen(){
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        sharedPreferences.getInt("Clicked Item", currentClickedPage);
+
+    }
+
+    private void setCurrentScreenPosition(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("Clicked Item", currentClickedPage);
+        editor.commit();
     }
 
     private void productsClickListener() {
@@ -151,14 +170,17 @@ public class MainFragment extends Fragment {
                 public void onItemClick(View itemView, int position) {
 
                     Products p = walmartProducts.get(position);
-                    setContributorFragment(p.getImage(), p.getLongDescription(), p.isInStock());
+                    setDetailsFragment(p.getImage(), p.getLongDescription(), p.isInStock());
+
                 }
             });
         }
 
     }
 
-    private void setContributorFragment(String url, String description, boolean inStock) {
+
+
+    private void setDetailsFragment(String url, String description, boolean inStock) {
         DetailsFragment detailsFragment = new DetailsFragment();
         detailsFragment.setDescription(description);
         detailsFragment.setImageUrl(url);
