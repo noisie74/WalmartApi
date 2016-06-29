@@ -40,10 +40,6 @@ public class DetailsFragment extends Fragment {
 
     protected View v;
     protected Context context;
-//    private DetailsAdapter detailsAdapter;
-//    private List<Products> products;
-//    protected RecyclerView recyclerView;
-//    private String[] selectedItem;
     private String imageUrl;
     private String descriptionText;
     private boolean inStockVar;
@@ -62,77 +58,32 @@ public class DetailsFragment extends Fragment {
 
         v = inflater.inflate(R.layout.fragment_details, container, false);
 
-        getClickedItem();
-        initRecyclerView(v);
-        if(descriptionText!=null)
-            description.setText((Html.fromHtml(descriptionText.replaceAll("<img.+?>", ""))));
-        if(inStockVar )
-            inStock.setText("In Stock");
-        if(imageUrl != null)
-            Picasso.with(context)
-                    .load(imageUrl)
-                    .placeholder(R.drawable.placeholder)
-                    .into(image);
-//        walmartApiCall();
+        setView(v);
+        loadData();
 
         return v;
     }
 
-    private void getClickedItem() {
-        Bundle clickedRepository = getArguments();
-//        selectedItem = clickedRepository.getStringArray("Item");
-    }
 
-    /**
-     * initialize recycler view
-     * and give adapter empty arrayList
-     */
-    private void initRecyclerView(View v) {
+    private void setView(View v) {
         description = (TextView) v.findViewById(R.id.description);
         image = (ImageView) v.findViewById(R.id.image_detail);
         inStock = (TextView) v.findViewById(R.id.instock);
-//        recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        detailsAdapter = new DetailsAdapter(products);
 
     }
 
+    private void loadData() {
 
-//    public void walmartApiCall() {
-//
-//        WalmartAPI.WalmartApiRx apiCall = WalmartAPI.createRx();
-//
-//        Observable<Response<WalmartObject>> observable =
-//                apiCall.walmartProducts(ApiKey.apiKey, 1, 20);
-//
-//        observable.observeOn(AndroidSchedulers.mainThread()).
-//                subscribeOn(Schedulers.io()).
-//                observeOn(AndroidSchedulers.mainThread()).
-//                subscribe(new Subscriber<Response<WalmartObject>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Timber.d(e.getMessage());
-//                        Log.d("MainActivity", "Call Failed"+ e.getMessage());
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(Response<WalmartObject> productsResponse) {
-//                        Log.d("MainActivity", "Call Success");
-//                        products = productsResponse.body().getProducts();
-//                        detailsAdapter = new DetailsAdapter(products);
-//                        recyclerView.setAdapter(detailsAdapter);
-//
-//                    }
-//                });
-//    }
+        if (descriptionText != null)
+            description.setText((Html.fromHtml(descriptionText.replaceAll("<img.+?>", ""))));
+        if (inStockVar)
+            inStock.setText("In Stock");
+        if (imageUrl != null)
+            Picasso.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .into(image);
+    }
 
     public void setInStock(boolean inStock) {
         this.inStockVar = inStock;

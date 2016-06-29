@@ -29,7 +29,7 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     private static final String TAG = "WalmartObjectAdapter";
     private List<Products> walmartProducts;
     public Context context;
-    public static OnItemClickListener listener;
+    public  OnItemClickListener listener;
 
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
@@ -149,28 +149,18 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     }
 
     private void bindData(final Products data, MyViewHolder holder) {
-        holder.parentView.setTag(holder);
+//        holder.parentView.setTag(holder);
         holder.name.setText(data.getProductName());
         if (data.getRating() > 0.0){
             holder.rating.setText("Rating " + String.valueOf(String.format("%.01f",data.getRating())));
         }
         holder.price.setText("Price " + data.getPrice());
 
-//        holder.description.setText(data.getShortDescription());
 
         Picasso.with(context)
                 .load(data.getImage())
                 .placeholder(R.drawable.placeholder)
                 .into(holder.image);
-
-//        holder.parentView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (listener != null) {
-//                    listener.onItemClick(data.getLongDescription());
-//                }
-//            }
-//        });
 
     }
 
