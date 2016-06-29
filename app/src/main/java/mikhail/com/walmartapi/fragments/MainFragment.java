@@ -45,6 +45,7 @@ public class MainFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     boolean requestInProgress;
     int itemsToLoad = 0;
+    int pageNumber = 1;
 
 
 
@@ -54,10 +55,10 @@ public class MainFragment extends Fragment {
         v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         setView();
 //        if (itemsToLoad == 0){
-            walmartApiCall(10);
+            walmartApiCall(1,10);
 //            itemsToLoad++;
 //        }
-        setScrollListener();
+//        setScrollListener();
         productsClickListener();
 
         return v;
@@ -76,14 +77,14 @@ public class MainFragment extends Fragment {
 
 
 
-    public void walmartApiCall(int items) {
+    public void walmartApiCall(int pageNumber, int items) {
 
         WalmartAPI.WalmartApiRx apiCall = WalmartAPI.createRx();
 
 
 
         Observable<Response<WalmartObject>> observable =
-                apiCall.walmartProducts(ApiKey.apiKey, 1, items);
+                apiCall.walmartProducts(ApiKey.apiKey, pageNumber, items);
 
         observable.observeOn(AndroidSchedulers.mainThread()).
                 subscribeOn(Schedulers.io()).
@@ -91,6 +92,8 @@ public class MainFragment extends Fragment {
                 subscribe(new Subscriber<Response<WalmartObject>>() {
                     @Override
                     public void onCompleted() {
+
+                        Log.d("MainActivity", "Call Completed");
 
 
                     }
@@ -121,11 +124,18 @@ public class MainFragment extends Fragment {
      */
     private void callSuccess(Response<WalmartObject> productsResponse) {
 
-        walmartProducts = productsResponse.body().getProducts();
-        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts);
-        recyclerView.setAdapter(walmartObjectAdapter);
+        walmartProducts.addAll(productsResponse.body().getProducts());
+//        walmartObjectAdapter = new WalmartObjectAdapter(walmartProducts);
+//        recyclerView.setAdapter(walmartObjectAdapter);
         walmartObjectAdapter.notifyDataSetChanged();
         swipeContainer.setRefreshing(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        setScrollListener();
     }
 
     private void setScrollListener(){
@@ -134,8 +144,14 @@ public class MainFragment extends Fragment {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 Log.e("MainFrament","onLoadMore called");
-                itemsToLoad +=10;
-                walmartApiCall(itemsToLoad);
+//                itemsToLoad +=10;
+
+//                if (itemsToLoad == 30){
+//                    pageNumber += 1;
+//                    itemsToLoad = 10;
+//                }
+
+                walmartApiCall(pageNumber++,10);
             }
         });
     }
