@@ -94,7 +94,7 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         holder.name.setText((data.getProductName().replaceAll("[^\\w\\s]", "")));
         if (data.getRating() > 0) {
             holder.rating.setText("Rating " + String.valueOf(String.format("%.01f", data.getRating())));
-        } else holder.rating.setText("Not rated");
+        } else holder.rating.setText(R.string.not_rated);
         holder.price.setText("Price " + data.getPrice());
 
         Picasso.with(context)

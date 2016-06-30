@@ -1,13 +1,10 @@
 package mikhail.com.walmartapi.fragments;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -17,12 +14,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,10 +33,7 @@ import mikhail.com.walmartapi.model.WalmartObject;
 import mikhail.com.walmartapi.module.ApiModule;
 import mikhail.com.walmartapi.module.DaggerWalmartComponent;
 import mikhail.com.walmartapi.module.WalmartComponent;
-import mikhail.com.walmartapi.presenter.GetPresenter;
-import mikhail.com.walmartapi.util.AppUtils;
 import retrofit2.Response;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -70,7 +63,7 @@ public class MainFragment extends Fragment {
     public final String TAG = "DetailsFrag";
     public WalmartAPI mApi;
     public WalmartComponent mApiComponent;
-    Context context;
+    public Context context;
 
 
     @Nullable
@@ -109,10 +102,10 @@ public class MainFragment extends Fragment {
 
     public void walmartApiCall(int pageNumber, int items) {
 
-        if (!isConnected(this.context)){
-            Toast.makeText(getActivity(), "No Network Connection!", Toast.LENGTH_SHORT).show();
+        if (!isConnected(this.context)) {
+            Toast.makeText(getActivity(), R.string.no_connection, Toast.LENGTH_SHORT).show();
 
-        }else {
+        } else {
             mApiComponent = DaggerWalmartComponent.builder()
                     .apiModule(new ApiModule())
                     .build();
@@ -126,11 +119,7 @@ public class MainFragment extends Fragment {
                         @Override
                         public void onCompleted() {
 
-                            Timber.d("Call Completed!");
-                            if (MainActivity.progressBar.isShown()) {
-                                MainActivity.progressBar.setVisibility(View.GONE);
-                            }
-
+                            onRequestComplete();
                         }
 
                         @Override
@@ -141,8 +130,7 @@ public class MainFragment extends Fragment {
 
                         @Override
                         public void onNext(Response<WalmartObject> productsResponse) {
-                            callSuccess(productsResponse);
-                            Timber.d("Call Success!");
+                            onRequestSuccess(productsResponse);
 
                         }
                     });
@@ -153,10 +141,17 @@ public class MainFragment extends Fragment {
 
     public void onRequestFail(String error) {
         Timber.d("MainActivity", "Error: " + error);
-        Toast.makeText(getActivity(), "Error. Please try again!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_SHORT).show();
 
     }
 
+    public void onRequestComplete() {
+        Timber.d("Call Completed!");
+        if (MainActivity.progressBar.isShown()) {
+            MainActivity.progressBar.setVisibility(View.GONE);
+        }
+
+    }
 
     /**
      * successful api call
@@ -164,8 +159,8 @@ public class MainFragment extends Fragment {
      *
      * @param productsResponse
      */
-    public void callSuccess(Response<WalmartObject> productsResponse) {
-
+    public void onRequestSuccess(Response<WalmartObject> productsResponse) {
+        Timber.d("Call Success!");
         walmartProducts.addAll(productsResponse.body().getProducts());
         walmartObjectAdapter.notifyDataSetChanged();
         swipeContainer.setRefreshing(false);
@@ -223,12 +218,27 @@ public class MainFragment extends Fragment {
                     DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager()
                             .findFragmentById(R.id.details_fragment);
 
+                    FrameLayout frameLayout = new FrameLayout(getContext());
+                    frameLayout.findViewById(R.id.details_container);
+
                     Products p = walmartProducts.get(position);
 
-                    if (detailsFragment != null){
-//                        detailsFragment.showFragment();
+//                    if (frameLayout.isShown()){
+////                        detailsFragment.showFragmentnt();
+//
+//                    }
 
+
+                    boolean mDualPane;
+
+                    View rightFrame = getActivity().findViewById(R.id.details_container);
+                    mDualPane = rightFrame != null && rightFrame.getVisibility() == View.VISIBLE;
+
+                    if (mDualPane) {
+
+                        setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
                     }
+
                     setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
 
 
@@ -277,7 +287,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onRefresh() {
                 if (!isConnected(context)) {
-                    Toast.makeText(getActivity(), "No Network Connection!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.no_connection, Toast.LENGTH_LONG).show();
                     swipeContainer.setRefreshing(false);
                 } else {
                     walmartApiCall(pageNumber, itemsLoaded);

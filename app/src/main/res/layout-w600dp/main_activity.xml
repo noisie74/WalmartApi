@@ -11,17 +11,17 @@
             android:layout_weight="3"
             android:layout_height="match_parent"/>
 
-        <fragment class="mikhail.com.walmartapi.fragments.DetailsFragment"
-            android:id="@+id/details_fragment"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"/>
+        <!--<fragment class="mikhail.com.walmartapi.fragments.DetailsFragment"-->
+            <!--android:id="@+id/details_fragment"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="3"/>-->
 
-        <!--<FrameLayout-->
-        <!--android:id="@+id/details_container"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_weight="3"-->
-        <!--android:layout_height="match_parent"/>-->
+        <FrameLayout
+        android:id="@+id/details_container"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="match_parent"/>
     </LinearLayout>
     <ProgressBar
         android:id="@+id/progress_bar"

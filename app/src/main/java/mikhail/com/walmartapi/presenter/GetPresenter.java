@@ -57,7 +57,7 @@ public class GetPresenter {
 //
 //                    @Override
 //                    public void onNext(Response<WalmartObject> response) {
-//                        mainFragment.callSuccess(response);
+//                        mainFragment.onRequestSuccess(response);
 //                    }
 //                });
 //    }
@@ -91,7 +91,7 @@ public class GetPresenter {
                         List<Products> walmartProducts = new ArrayList<>();
                         walmartProducts.addAll(productsResponse.body().getProducts());
 
-//                        mainFragment.callSuccess(walmartProducts);
+//                        mainFragment.onRequestSuccess(walmartProducts);
                         Timber.d("Call Success!");
 
                     }
