@@ -215,13 +215,12 @@ public class MainFragment extends Fragment {
                 @Override
                 public void onItemClick(View itemView, int position) {
 
-                    DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager()
-                            .findFragmentById(R.id.details_fragment);
+//                    DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager()
+//                            .findFragmentById(R.id.details_fragment);
 
                     FrameLayout frameLayout = new FrameLayout(getContext());
                     frameLayout.findViewById(R.id.details_container);
 
-                    Products p = walmartProducts.get(position);
 
 //                    if (frameLayout.isShown()){
 ////                        detailsFragment.showFragmentnt();
@@ -229,17 +228,26 @@ public class MainFragment extends Fragment {
 //                    }
 
 
-                    boolean mDualPane;
+//                    boolean mDualPane;
+//
+//                    View rightFrame = getActivity().findViewById(R.id.details_container);
+//                    mDualPane = rightFrame != null && rightFrame.getVisibility() == View.VISIBLE;
+//
+//                    if (mDualPane) {
+//
+//                        setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
+//                    }
 
-                    View rightFrame = getActivity().findViewById(R.id.details_container);
-                    mDualPane = rightFrame != null && rightFrame.getVisibility() == View.VISIBLE;
+                    if (isTablet(getContext())){
+                        detailsFragment.showFragment();
 
-                    if (mDualPane) {
+                    }else {
 
+                        Products p = walmartProducts.get(position);
                         setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
+
                     }
 
-                    setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
 
 
 //                    setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
@@ -277,7 +285,7 @@ public class MainFragment extends Fragment {
     private void initFragment() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
-        fragmentTransaction.replace(R.id.frag_container, detailsFragment, TAG);
+        fragmentTransaction.add(R.id.frag_container, detailsFragment, TAG);
         fragmentTransaction.addToBackStack(TAG);
         fragmentTransaction.commit();
     }
