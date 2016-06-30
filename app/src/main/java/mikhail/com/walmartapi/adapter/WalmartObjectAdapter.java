@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,10 +91,10 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     }
 
     private void bindData(final Products data, MyViewHolder holder) {
-        holder.name.setText(data.getProductName());
-        if (data.getRating() > 0.0) {
+        holder.name.setText((data.getProductName().replaceAll("[^\\w\\s]", "")));
+        if (data.getRating() > 0) {
             holder.rating.setText("Rating " + String.valueOf(String.format("%.01f", data.getRating())));
-        }
+        } else holder.rating.setText("Not rated");
         holder.price.setText("Price " + data.getPrice());
 
         Picasso.with(context)

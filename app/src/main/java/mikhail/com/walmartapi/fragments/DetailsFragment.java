@@ -45,14 +45,18 @@ public class DetailsFragment extends Fragment {
 
         v = inflater.inflate(R.layout.fragment_details, container, false);
 
-        bindData(v);
-        loadData();
+        showFragment();
 
         return v;
     }
 
 
-    private void bindData(View v) {
+    public void showFragment(){
+        bindData();
+        loadData();
+    }
+
+    private void bindData() {
         try {
             ButterKnife.bind(this, v);
         } catch (Exception e) {
@@ -60,20 +64,25 @@ public class DetailsFragment extends Fragment {
         }
     }
 
-
     private void loadData() {
 
-        if (price != null)
+        if (price != null) {
             priceTextView.setText("Price " + price);
-        if (productDescription != null)
+        }
+        if (productDescription != null) {
             descriptionTextView.setText((Html.fromHtml(productDescription.replaceAll("<img.+?>", ""))));
-        if (isInStock)
+        }
+        if (isInStock) {
             inStockTextView.setText(R.string.in_stock);
-        if (imageUrl != null)
+        } else {
+            inStockTextView.setText(R.string.not_available);
+        }
+        if (imageUrl != null) {
             Picasso.with(context)
                     .load(imageUrl)
                     .placeholder(R.drawable.placeholder)
                     .into(itemImage);
+        }
     }
 
     public void setInStockTextView(boolean isInStock) {

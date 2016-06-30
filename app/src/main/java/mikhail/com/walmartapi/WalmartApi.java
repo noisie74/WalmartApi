@@ -2,6 +2,8 @@ package mikhail.com.walmartapi;
 
 import android.app.Application;
 
+import mikhail.com.walmartapi.activity.MainActivity;
+import mikhail.com.walmartapi.presenter.GetPresenter;
 import timber.log.Timber;
 
 /**
@@ -18,4 +20,5 @@ public class WalmartApi extends Application{
         }
 
     }
+
 }
