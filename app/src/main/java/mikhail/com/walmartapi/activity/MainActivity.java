@@ -9,7 +9,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import mikhail.com.walmartapi.R;
+import mikhail.com.walmartapi.fragments.DetailsFragment;
 import mikhail.com.walmartapi.fragments.MainFragment;
+import mikhail.com.walmartapi.util.AppUtils;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setFragment();
         showProgress(true);
+
+
     }
 
     private void setFragment() {
@@ -43,6 +47,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
 }

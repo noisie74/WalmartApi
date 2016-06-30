@@ -1,10 +1,13 @@
 package mikhail.com.walmartapi.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +21,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,12 +38,15 @@ import mikhail.com.walmartapi.module.ApiModule;
 import mikhail.com.walmartapi.module.DaggerWalmartComponent;
 import mikhail.com.walmartapi.module.WalmartComponent;
 import mikhail.com.walmartapi.presenter.GetPresenter;
+import mikhail.com.walmartapi.util.AppUtils;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+
+import static mikhail.com.walmartapi.util.AppUtils.isConnected;
 
 /**
  * Created by Mikhail on 6/22/16.
@@ -75,6 +83,7 @@ public class MainFragment extends Fragment {
         setView();
         productsClickListener();
         setScrollListener();
+        setPullRefresh();
 
         return v;
     }
@@ -100,39 +109,46 @@ public class MainFragment extends Fragment {
 
     public void walmartApiCall(int pageNumber, int items) {
 
-        mApiComponent = DaggerWalmartComponent.builder()
-                .apiModule(new ApiModule())
-                .build();
-        mApi = mApiComponent.provideWalmartService();
+        if (!isConnected(this.context)){
+            Toast.makeText(getActivity(), "No Network Connection!", Toast.LENGTH_SHORT).show();
 
-        mApi.walmartProducts(pageNumber, items)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<WalmartObject>>() {
-                    @Override
-                    public void onCompleted() {
+        }else {
+            mApiComponent = DaggerWalmartComponent.builder()
+                    .apiModule(new ApiModule())
+                    .build();
+            mApi = mApiComponent.provideWalmartService();
 
-                        Timber.d("Call Completed!");
-                        if (MainActivity.progressBar.isShown()) {
-                            MainActivity.progressBar.setVisibility(View.GONE);
+            mApi.walmartProducts(pageNumber, items)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Response<WalmartObject>>() {
+                        @Override
+                        public void onCompleted() {
+
+                            Timber.d("Call Completed!");
+                            if (MainActivity.progressBar.isShown()) {
+                                MainActivity.progressBar.setVisibility(View.GONE);
+                            }
+
                         }
 
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            onRequestFail(e.getMessage());
 
-                    @Override
-                    public void onError(Throwable e) {
-                        onRequestFail(e.getMessage());
+                        }
 
-                    }
+                        @Override
+                        public void onNext(Response<WalmartObject> productsResponse) {
+                            callSuccess(productsResponse);
+                            Timber.d("Call Success!");
 
-                    @Override
-                    public void onNext(Response<WalmartObject> productsResponse) {
-                        callSuccess(productsResponse);
-                        Timber.d("Call Success!");
+                        }
+                    });
+        }
 
-                    }
-                });
+
     }
 
     public void onRequestFail(String error) {
@@ -255,5 +271,21 @@ public class MainFragment extends Fragment {
         fragmentTransaction.addToBackStack(TAG);
         fragmentTransaction.commit();
     }
+
+    private void setPullRefresh() {
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!isConnected(context)) {
+                    Toast.makeText(getActivity(), "No Network Connection!", Toast.LENGTH_LONG).show();
+                    swipeContainer.setRefreshing(false);
+                } else {
+                    walmartApiCall(pageNumber, itemsLoaded);
+                }
+
+            }
+        });
+    }
+
 
 }
