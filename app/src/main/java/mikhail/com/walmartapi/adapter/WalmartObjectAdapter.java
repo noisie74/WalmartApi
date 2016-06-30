@@ -43,11 +43,9 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         public TextView price;
         @BindView(R.id.product_img)
         public ImageView image;
-        public View parentView;
 
         public MyViewHolder(final View view) {
             super(view);
-            this.parentView = view;
 
             try {
                 ButterKnife.bind(this, view);
@@ -97,7 +95,6 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
             holder.rating.setText("Rating " + String.valueOf(String.format("%.01f", data.getRating())));
         }
         holder.price.setText("Price " + data.getPrice());
-
 
         Picasso.with(context)
                 .load(data.getImage())

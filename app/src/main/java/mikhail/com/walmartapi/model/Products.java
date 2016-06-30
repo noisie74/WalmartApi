@@ -58,17 +58,6 @@ public class Products {
         return inStock;
     }
 
-//    @Override
-//    public String toString() {
-//        return String.format(DecimalFormat.getCurrencyInstance(Locale.US).format(price));
-//
-//    }
-
-
-//    @Override
-//    public String toString() {
-//        return String.format("%s",rating);
-//    }
 }
 
 
