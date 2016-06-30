@@ -2,6 +2,9 @@ package mikhail.com.walmartapi.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.DecimalFormat;
+import java.util.Locale;
+
 /**
  * Created by Mikhail on 6/21/16.
  */
@@ -11,11 +14,11 @@ public class Products {
     private String productName;
     private String shortDescription;
     private String longDescription;
-    private float price;
+    private String price;
     @SerializedName("productImage")
     private String image;
     @SerializedName("reviewRating")
-    private float rating;
+    private double rating;
     private int reviewCount;
     private boolean inStock;
 
@@ -35,7 +38,7 @@ public class Products {
         return longDescription;
     }
 
-    public float getPrice() {
+    public String getPrice() {
         return price;
     }
 
@@ -43,7 +46,7 @@ public class Products {
         return image;
     }
 
-    public float getRating() {
+    public double getRating() {
         return rating;
     }
 
@@ -54,6 +57,7 @@ public class Products {
     public boolean isInStock() {
         return inStock;
     }
+
 }
 
 
