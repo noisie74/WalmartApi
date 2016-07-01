@@ -1,10 +1,7 @@
 package mikhail.com.walmartapi.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +25,11 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
 
     private List<Products> walmartProducts;
     public Context context;
-    public OnItemClickListener listener;
+    public OnItemClickListener clickListener;
 
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+    public void setOnItemClickListener(OnItemClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -57,8 +54,8 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (listener != null)
-                        listener.onItemClick(view, getLayoutPosition());
+                    if (clickListener != null)
+                        clickListener.onItemClick(view, getLayoutPosition());
                 }
             });
         }

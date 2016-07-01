@@ -1,11 +1,7 @@
 package mikhail.com.walmartapi.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -58,7 +53,6 @@ public class MainFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private int pageNumber = 1;
     private int itemsLoaded = 30;
-    private int currentClickedPage = 0;
     public DetailsFragment detailsFragment;
     public View v;
     public final String TAG = "DetailsFrag";
@@ -81,8 +75,6 @@ public class MainFragment extends Fragment {
 
         return v;
     }
-
-
 
 
     private void setView() {
@@ -158,7 +150,7 @@ public class MainFragment extends Fragment {
 
     /**
      * successful api call
-     * returns a list of top repositories
+     * returns a list of walmart products
      *
      * @param productsResponse
      */
@@ -177,7 +169,6 @@ public class MainFragment extends Fragment {
             public void onLoadMore(int page, int totalItemsCount) {
                 walmartApiCall(pageNumber++, itemsLoaded);
                 Timber.d("Page loaded: " + String.valueOf(page));
-                currentClickedPage++;
             }
         });
     }
@@ -203,11 +194,6 @@ public class MainFragment extends Fragment {
         }
     }
 
-    public static boolean isTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
 
     private void setDetailsFragment(String imageUrl, String description, String price, boolean inStock) {
 
