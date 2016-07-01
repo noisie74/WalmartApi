@@ -4,7 +4,7 @@ import android.app.Application;
 import timber.log.Timber;
 
 /**
- * Created by Mikhail on 6/21/16.
+ * Main application class
  */
 public class WalmartApiApp extends Application{
 

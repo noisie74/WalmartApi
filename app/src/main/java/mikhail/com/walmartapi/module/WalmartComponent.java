@@ -6,7 +6,7 @@ import dagger.Component;
 import mikhail.com.walmartapi.api.WalmartAPI;
 
 /**
- * Created by Mikhail on 6/29/16.
+ * api component
  */
 @Singleton
 @Component(modules = {ApiModule.class})

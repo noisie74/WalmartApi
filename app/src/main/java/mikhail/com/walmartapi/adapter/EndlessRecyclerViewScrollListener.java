@@ -9,7 +9,7 @@ import android.util.Log;
 import timber.log.Timber;
 
 /**
- * Created by Mikhail on 6/23/16.
+ * Handles lazy loading
  */
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
     // The minimum amount of items to have below your current scroll position

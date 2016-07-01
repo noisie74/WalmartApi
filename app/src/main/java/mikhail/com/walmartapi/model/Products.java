@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 import java.util.Locale;
 
 /**
- * Created by Mikhail on 6/21/16.
+ * JSon data
  */
 public class Products {
 

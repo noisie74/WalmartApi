@@ -28,6 +28,11 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     public OnItemClickListener clickListener;
 
 
+    public WalmartObjectAdapter(List<Products> walmartProducts) {
+        this.walmartProducts = walmartProducts;
+    }
+
+
     public void setOnItemClickListener(OnItemClickListener clickListener) {
         this.clickListener = clickListener;
     }
@@ -59,10 +64,6 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
                 }
             });
         }
-    }
-
-    public WalmartObjectAdapter(List<Products> walmartProducts) {
-        this.walmartProducts = walmartProducts;
     }
 
 

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by Mikhail on 6/21/16.
+ * Root JSon object
  */
 public class WalmartObject {
 

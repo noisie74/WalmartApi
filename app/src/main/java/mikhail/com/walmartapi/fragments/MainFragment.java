@@ -38,13 +38,12 @@ import timber.log.Timber;
 import static mikhail.com.walmartapi.util.AppUtils.isConnected;
 
 /**
- * Created by Mikhail on 6/22/16.
+ * Main fragment loads when app starts
  */
 public class MainFragment extends Fragment {
 
     @BindView(R.id.swipeContainer)
     public SwipeRefreshLayout swipeContainer;
-
     @BindView(R.id.recycler_view)
     public RecyclerView recyclerView;
 
@@ -96,6 +95,13 @@ public class MainFragment extends Fragment {
     }
 
 
+    /**
+     * Subscribe to Walmart api Object
+     *
+     * @param pageNumber
+     * @param items
+     */
+
     public void walmartApiCall(int pageNumber, int items) {
 
         if (!isConnected(this.context)) {
@@ -108,7 +114,6 @@ public class MainFragment extends Fragment {
             mApi = mApiComponent.provideWalmartService();
 
             mApi.walmartProducts(pageNumber, items)
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<Response<WalmartObject>>() {
@@ -161,19 +166,27 @@ public class MainFragment extends Fragment {
         swipeContainer.setRefreshing(false);
     }
 
-
+    /**
+     * enable lazy loading
+     */
     private void setScrollListener() {
 
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
+
+                if (!isConnected(context)) {
+                    Toast.makeText(getActivity(), R.string.no_connection, Toast.LENGTH_SHORT).show();
+                }
                 walmartApiCall(pageNumber++, itemsLoaded);
                 Timber.d("Page loaded: " + String.valueOf(page));
             }
         });
     }
 
-
+    /**
+     * open Details fragment
+     */
     private void productsClickListener() {
 
         if (walmartObjectAdapter != null) {
@@ -182,21 +195,17 @@ public class MainFragment extends Fragment {
                 @Override
                 public void onItemClick(View itemView, int position) {
 
-
                     Products p = walmartProducts.get(position);
                     setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
 
                 }
 
-
             });
-
         }
     }
 
 
     private void setDetailsFragment(String imageUrl, String description, String price, boolean inStock) {
-
         detailsFragment = new DetailsFragment();
         detailsFragment.setDescriptionTextView(description);
         detailsFragment.setImageUrl(imageUrl);

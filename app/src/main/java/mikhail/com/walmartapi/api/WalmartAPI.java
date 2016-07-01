@@ -8,9 +8,8 @@ import retrofit2.http.Path;
 import rx.Observable;
 
 /**
- * Created by Mikhail on 6/21/16.
+ * Api Service
  */
-
 
 public interface WalmartAPI {
     @GET("{pageNumber}/{pageSize}")

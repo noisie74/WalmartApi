@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
- * Created by Mikhail on 6/30/16.
+ * Check if network connection is available
  */
 public class AppUtils {
 

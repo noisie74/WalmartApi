@@ -4,7 +4,7 @@ import android.view.View;
 
 
 /**
- * Created by Mikhail on 6/21/16.
+ * Handles itemClicks
  */
 public interface OnItemClickListener {
     void onItemClick(View itemView, int position);
