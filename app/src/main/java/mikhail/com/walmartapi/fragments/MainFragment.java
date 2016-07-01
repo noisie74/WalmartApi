@@ -58,7 +58,7 @@ public class MainFragment extends Fragment {
     private int pageNumber = 1;
     private int itemsLoaded = 30;
     private int currentClickedPage = 0;
-    protected DetailsFragment detailsFragment;
+    public DetailsFragment detailsFragment;
     public View v;
     public final String TAG = "DetailsFrag";
     public WalmartAPI mApi;
@@ -118,7 +118,6 @@ public class MainFragment extends Fragment {
                     .subscribe(new Subscriber<Response<WalmartObject>>() {
                         @Override
                         public void onCompleted() {
-
                             onRequestComplete();
                         }
 
@@ -220,6 +219,11 @@ public class MainFragment extends Fragment {
 
                     FrameLayout frameLayout = new FrameLayout(getContext());
                     frameLayout.findViewById(R.id.details_container);
+
+
+
+                    DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager()
+                            .findFragmentById(R.id.details_fragment);
 
 
 //                    if (frameLayout.isShown()){
