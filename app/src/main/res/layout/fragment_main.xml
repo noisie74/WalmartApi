@@ -2,7 +2,7 @@
     android:id="@+id/saved_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6dp"
+    android:layout_margin="@dimen/card_marg"
     android:descendantFocusability="blocksDescendants">
 
     <RelativeLayout
@@ -13,13 +13,13 @@
 
         <ImageView
             android:id="@+id/product_img"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/prod_img_w"
+            android:layout_height="@dimen/prod_img_h"
             android:layout_alignParentTop="true"
-            android:paddingBottom="4dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:paddingTop="4dp" />
+            android:paddingBottom="@dimen/img_pad_b"
+            android:paddingLeft="@dimen/img_pad_l"
+            android:paddingRight="@dimen/img_pad_r"
+            android:paddingTop="@dimen/img_pad_t" />
 
 
         <TextView
@@ -28,11 +28,11 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/product_img"
             android:maxLines="2"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:paddingTop="4dp"
+            android:paddingLeft="@dimen/prod_pad_l"
+            android:paddingRight="@dimen/prod_pad_r"
+            android:paddingTop="@dimen/prod_pad_t"
             android:textColor="#222"
-            android:textSize="14sp"
+            android:textSize="@dimen/prod_text_size"
             android:textStyle="bold" />
 
         <TextView
@@ -41,23 +41,23 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_name"
             android:layout_toRightOf="@id/product_img"
-            android:paddingLeft="4dp"
+            android:paddingLeft="@dimen/rating_pad_lef"
+            android:paddingTop="@dimen/rating_pad_t"
             android:textColor="#99666666"
-            android:paddingTop="5dp"
-            android:textSize="10sp" />
+            android:textSize="@dimen/rating_text_size" />
 
         <TextView
             android:id="@+id/product_price"
-            android:paddingTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_rating"
             android:layout_toRightOf="@id/product_img"
-            android:paddingBottom="4dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingTop="@dimen/price_pad_main_t"
+            android:paddingBottom="@dimen/price_pad_main_b"
+            android:paddingLeft="@dimen/price_pad_main_l"
+            android:paddingRight="@dimen/price_pad_main_r"
             android:textColor="#666"
-            android:textSize="14sp" />
+            android:textSize="@dimen/price_text_size_main" />
 
     </RelativeLayout>
 

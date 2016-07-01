@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="4dp"
+    android:paddingTop="@dimen/scroll_dim"
     android:background="@android:color/holo_blue_bright">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,10 +15,10 @@
 
             android:id="@+id/image_detail"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="@dimen/image_height"
             android:layout_alignParentTop="true"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingLeft="@dimen/image_left_pad"
+            android:paddingRight="@dimen/image_right_pad"
             android:scaleType="centerCrop" />
 
         <TextView
@@ -27,9 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/image_detail"
             android:maxLines="1"
-            android:padding="8dp"
+            android:padding="@dimen/price_padding"
             android:textColor="#222"
-            android:textSize="18sp"
+            android:textSize="@dimen/price_text_size"
             android:textStyle="bold" />
 
 
@@ -38,9 +38,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_price"
-            android:padding="8dp"
+            android:padding="@dimen/desc_padd"
             android:textColor="#666"
-            android:textSize="12sp" />
+            android:textSize="@dimen/desc_text_size" />
 
         <TextView
             android:id="@+id/instock"
@@ -50,10 +50,10 @@
             android:layout_below="@+id/image_detail"
             android:gravity="end"
             android:maxLines="1"
-            android:paddingRight="8dp"
-            android:paddingTop="5dp"
+            android:paddingRight="@dimen/instock_pad"
+            android:paddingTop="@dimen/instock_pad_top"
             android:textColor="#99666666"
-            android:textSize="10sp" />
+            android:textSize="@dimen/instock_size" />
 
     </RelativeLayout>
 

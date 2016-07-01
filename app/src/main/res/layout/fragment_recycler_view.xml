@@ -9,10 +9,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_blue_dark"
-    android:paddingBottom="4dp"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp"
-    android:paddingTop="4dp">
+    android:paddingBottom="@dimen/recycler_pad_b"
+    android:paddingLeft="@dimen/recycler_pad_l"
+    android:paddingRight="@dimen/recycler_pad_r"
+    android:paddingTop="@dimen/recycler_pad_t">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
