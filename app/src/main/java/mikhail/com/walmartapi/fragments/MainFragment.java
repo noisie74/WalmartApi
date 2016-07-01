@@ -2,6 +2,7 @@ package mikhail.com.walmartapi.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -80,6 +81,9 @@ public class MainFragment extends Fragment {
 
         return v;
     }
+
+
+
 
     private void setView() {
         try {
@@ -179,33 +183,6 @@ public class MainFragment extends Fragment {
     }
 
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        setCurrentScreenPosition();
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getPositionOnTheScreen();
-    }
-
-    private void getPositionOnTheScreen() {
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        currentClickedPage = sharedPreferences.getInt("Clicked Item", currentClickedPage);
-
-    }
-
-    private void setCurrentScreenPosition() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("Clicked Item", currentClickedPage);
-        editor.commit();
-    }
-
     private void productsClickListener() {
 
         if (walmartObjectAdapter != null) {
@@ -214,59 +191,16 @@ public class MainFragment extends Fragment {
                 @Override
                 public void onItemClick(View itemView, int position) {
 
-//                    DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager()
-//                            .findFragmentById(R.id.details_fragment);
 
-                    FrameLayout frameLayout = new FrameLayout(getContext());
-                    frameLayout.findViewById(R.id.details_container);
-
-
-
-                    DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager()
-                            .findFragmentById(R.id.details_fragment);
-
-
-//                    if (frameLayout.isShown()){
-////                        detailsFragment.showFragmentnt();
-//
-//                    }
-
-
-//                    boolean mDualPane;
-//
-//                    View rightFrame = getActivity().findViewById(R.id.details_container);
-//                    mDualPane = rightFrame != null && rightFrame.getVisibility() == View.VISIBLE;
-//
-//                    if (mDualPane) {
-//
-//                        setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
-//                    }
-
-                    if (isTablet(getContext())){
-                        detailsFragment.showFragment();
-
-                    }else {
-
-                        Products p = walmartProducts.get(position);
-                        setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
-
-                    }
-
-
-
-//                    setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
-
-//                    if (isTablet(getContext())) {
-////                        DetailsFragment detailsFragment = new DetailsFragment();
-////                        detailsFragment.showFragment();
-//                        setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
-//                    }
-
+                    Products p = walmartProducts.get(position);
+                    setDetailsFragment(p.getImage(), p.getLongDescription(), p.getPrice(), p.isInStock());
 
                 }
-            });
-        }
 
+
+            });
+
+        }
     }
 
     public static boolean isTablet(Context context) {

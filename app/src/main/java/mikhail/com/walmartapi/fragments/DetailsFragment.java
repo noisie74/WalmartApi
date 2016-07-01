@@ -1,6 +1,7 @@
 package mikhail.com.walmartapi.fragments;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -70,7 +71,9 @@ public class DetailsFragment extends Fragment {
             priceTextView.setText("Price " + price);
         }
         if (productDescription != null) {
-            descriptionTextView.setText((Html.fromHtml(productDescription.replaceAll("<img.+?>", ""))));
+
+            String insertDescription = String.valueOf(Html.fromHtml(productDescription.replaceAll("<img.+?>", "")));
+            descriptionTextView.setText(insertDescription.replaceAll("[\\uFFFD]", ""));
         }
         if (isInStock) {
             inStockTextView.setText(R.string.in_stock);
