@@ -1,13 +1,12 @@
 package mikhail.com.walmartapi;
 
 import android.app.Application;
-
 import timber.log.Timber;
 
 /**
  * Created by Mikhail on 6/21/16.
  */
-public class WalmartApi extends Application{
+public class WalmartApiApp extends Application{
 
     @Override
     public void onCreate() {
@@ -18,4 +17,5 @@ public class WalmartApi extends Application{
         }
 
     }
+
 }

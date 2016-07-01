@@ -1,8 +1,6 @@
 package mikhail.com.walmartapi.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,11 +25,11 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
 
     private List<Products> walmartProducts;
     public Context context;
-    public OnItemClickListener listener;
+    public OnItemClickListener clickListener;
 
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+    public void setOnItemClickListener(OnItemClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -56,8 +54,8 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (listener != null)
-                        listener.onItemClick(view, getLayoutPosition());
+                    if (clickListener != null)
+                        clickListener.onItemClick(view, getLayoutPosition());
                 }
             });
         }
@@ -90,10 +88,10 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
     }
 
     private void bindData(final Products data, MyViewHolder holder) {
-        holder.name.setText(data.getProductName());
-        if (data.getRating() > 0.0) {
+        holder.name.setText((data.getProductName().replaceAll("[^\\w\\s]", "")));
+        if (data.getRating() > 0) {
             holder.rating.setText("Rating " + String.valueOf(String.format("%.01f", data.getRating())));
-        }
+        } else holder.rating.setText(R.string.not_rated);
         holder.price.setText("Price " + data.getPrice());
 
         Picasso.with(context)

@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">WalmartApi</string>
     <string name="in_stock">In Stock</string>
+    <string name="not_available">Unavailable</string>
+    <string name="no_connection">No Network Connection!</string>
+    <string name="error">Error. Please try again!</string>
+    <string name="not_rated">Not rated</string>
 </resources>
