@@ -50,6 +50,7 @@ public class WalmartObjectAdapter extends RecyclerView.Adapter<WalmartObjectAdap
         public MyViewHolder(final View view) {
             super(view);
 
+
             try {
                 ButterKnife.bind(this, view);
             } catch (Exception e) {
